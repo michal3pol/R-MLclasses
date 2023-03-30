@@ -41,27 +41,27 @@ vecD
 #i
 nazwa <- c("Tablet Apple iPad (10 gen.) 2022 (srebrny)", 
            "Tablet Apple iPad 2021", 
-           "Tablet Apple iPad (10 gen.) 2022 (różowy)", 
-           "Tablet Apple iPad Wi-Fi (gwiezdna szarość)", 
-           "Tablet Apple iPad Air 2022 Wi-Fi (gwiezdna szarość)", 
-           "Tablet Apple iPad Air 2022 Wi-Fi (księżycowa poświata)", 
+           "Tablet Apple iPad (10 gen.) 2022 (rozowy)", 
+           "Tablet Apple iPad Wi-Fi (gwiezdna szarosc)", 
+           "Tablet Apple iPad Air 2022 Wi-Fi (gwiezdna szarosc)", 
+           "Tablet Apple iPad Air 2022 Wi-Fi (ksiezycowa poswiata)", 
            "Tablet Apple iPad 2021 Wi-Fi 256GB (srebrny)", 
            "Tablet Apple iPad Pro 2021 (srebrny)", 
-           "Tablet Apple iPad Pro (gwiezdna szarość)", 
+           "Tablet Apple iPad Pro (gwiezdna szarosc)", 
            "iPad10")
-modem <- c("Wi-Fi 6", "Wi-Fi 6 ", "Wi-Fi 6", "Wi-Fi 6", "Wi-Fi 802", "Wi-Fi 802", "Wi-Fi 6", "Wi-Fi 6", "Wi-Fi 6", "Wi-Fi 6")
-wyświetlacz <- c("10.9\"", "10.2\"", "10.2\"", "10.2\"", "10.9\"", "10.9\"", "10.2\"", "10.2\"", "11\"", "9.7\"")
-pamięć_RAM <- c("1GB", "1GB", "1GB", "1GB", "2GB", "1GB", "2GB", "16GB", "8GB", "2GB")
-pamięć_wbudowana <- c("64GB", "64GB", "64GB", "256GB", "64GB", "64GB", "16GB", "2TB", "256GB", "128GB")
+modem <- c("Wi-Fi 6", "LTE", "Wi-Fi 6", "LTE", "Wi-Fi 802", "Wi-Fi 802", "LTE", "Wi-Fi 6", "Wi-Fi 6", "Wi-Fi 6")
+wyswietlacz <- c("10.9\"", "10.2\"", "10.2\"", "10.2\"", "10.9\"", "10.9\"", "10.2\"", "10.2\"", "11\"", "9.7\"")
+pamiec_RAM <- c("1GB", "1GB", "1GB", "1GB", "2GB", "1GB", "2GB", "16GB", "8GB", "2GB")
+pamiec_wbudowana <- c("64GB", "64GB", "64GB", "256GB", "64GB", "64GB", "16GB", "2TB", "256GB", "128GB")
 cena <- c(2719, 2399, 3649, 2749, 3799, 2999, 2749, 12599, 7399, 5299)
 liczba_opinii <- c(6, 17, 2, 1, 11, 13, 32, 0, 6, 8)
 
-tablety <- data.frame(nazwa, modem, wyświetlacz, pamięć_RAM, pamięć_wbudowana, cena, liczba_opinii)
+tablety <- data.frame(nazwa, modem, wyswietlacz, pamiec_RAM, pamiec_wbudowana, cena, liczba_opinii)
 tablety
 mean(tablety$cena)
 
 #j
-nowy_tablet <- c("iPad11", "k", "9.7\"",  "1GB", "32GB", 3999, 560)
+nowy_tablet <- c("iPad11", "LTE", "9.7\"",  "1GB", "32GB", 3999, 560)
 tablety <- rbind(tablety, nowy_tablet)
 tablety$cena <- as.numeric(tablety$cena) 
 mean(tablety$cena)
@@ -72,14 +72,14 @@ aggregate(cena ~ ocena, tablety, mean)
 
 #l
 nowe_tablety <- data.frame(
-  nazwa = c("Tablet Apple iPad 2021(gwiezdna szarość)",
+  nazwa = c("Tablet Apple iPad 2021(gwiezdna szarosc)",
             "Tablet Apple iPad 2022 (10 gen.) (srebrny)",
             "Tablet Apple iPad 2022 (10 gen.) (niebieski)",
-            "Tablet Apple iPad (10 gen.) 2022 (żółty)"),
-  modem = c("WiFi 6", "WiFi 6", "WiFi 6", "WiFi 6"),
-  wyświetlacz = c("10.2\"", "10.9\"", "10.9\"", "10.9\""),
-  pamięć_RAM = c("1GB", "1GB", "1GB", "1GB"),
-  pamięć_wbudowana = c("64GB", "256GB", "256GB", "256GB"),
+            "Tablet Apple iPad (10 gen.) 2022 (zolty)"),
+  modem = c("WiFi 6", "WiFi 6", "LTE", "WiFi 6"),
+  wyswietlacz = c("10.2\"", "10.9\"", "10.9\"", "10.9\""),
+  pamiec_RAM = c("1GB", "1GB", "1GB", "1GB"),
+  pamiec_wbudowana = c("64GB", "256GB", "256GB", "256GB"),
   cena = c(2599, 3199, 3549, 4899),
   liczba_opinii = c(3, 23, 1, 0),
   ocena = c(6,6,6,0)
@@ -103,7 +103,7 @@ wykres_kolowy
 wykres_wachlarzowy <- ggplot(data = tablety, aes(x = factor(ocena), fill = factor(ocena))) +
   geom_bar() +
   scale_fill_brewer(palette = "Blues") +
-  labs(x = "Ocena", y = "Procentowy udział") +
+  labs(x = "Ocena", y = "Procentowy udzial") +
   theme_minimal() +
   theme(legend.position = "none")
 wykres_wachlarzowy
@@ -111,7 +111,7 @@ wykres_wachlarzowy
 #n
 tablety$status_opinii <- cut(tablety$liczba_opinii, 
                              breaks = c(-Inf, 0, 50, 100, Inf),
-                             labels = c("nie ma", "mniej niż 50 opinii", "50-100 opinii", "więcej niż 100 opinii"))
+                             labels = c("nie ma", "mniej niz 50 opinii", "50-100 opinii", "wiecej niz 100 opinii"))
 tablety$status_opinii <- as.factor(tablety$status_opinii)
 
 # tabela z procentowym udziałem tabletów w zależności od statusu opinii
@@ -120,8 +120,8 @@ plot_kolo <- pie(table_prop, main = "Status opinii", col = rainbow(nrow(table_pr
 
 #o
 for (i in 1:nrow(tablety)) {
-  zdanie <- paste(tablety$nazwa[i], " ma ocenę klientów ", 
-                  tablety$ocena[i], " bo ma liczbę opinii ", 
+  zdanie <- paste(tablety$nazwa[i], " ma ocene klientow ", 
+                  tablety$ocena[i], " bo ma liczbe opinii ", 
                   tablety$liczba_opinii[i], ".")
   print(zdanie)
 }
