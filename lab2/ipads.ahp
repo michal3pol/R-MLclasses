@@ -1,0 +1,131 @@
+Version: 2.0
+
+#########################
+# Alternatives Section
+#
+
+Alternatives: &alternatives
+ # Here, we list all the alternatives, together with their attributes. 
+ # We can use these attributes later in the file when defining 
+ # preferenceFunctions. The attributes can be quantitative or 
+ # qualitative.
+ 
+  Tablet Apple iPad 10 gen 2022 s:
+    wyswietlacz: 10.9
+    ram: 1
+    dysk: 64
+    cena: 2719
+    kolor: szary
+
+  Tablet Apple iPad 2021:
+    wyswietlacz: 10.2
+    ram: 1
+    dysk: 64
+    cena: 2399
+    kolor: niebieski
+
+  Tablet Apple iPad 10 gen 2022 zielony:
+    wyswietlacz: 10.2
+    ram: 1
+    dysk: 64
+    cena: 3649
+    kolor: zielony
+
+  Tablet Apple iPad Wi-Fi szary:
+    wyswietlacz: 10.2
+    ram: 1
+    dysk: 256
+    cena: 2749
+    kolor: szary
+
+  Tablet Apple iPad Air 2022 Wi-Fi szary:
+    wyswietlacz: 10.9
+    ram: 2
+    dysk: 64
+    cena: 3799
+    kolor: szary
+
+  Tablet Apple iPad Air 2022 Wi-Fi niebieski:
+    wyswietlacz: 10.9
+    ram: 1
+    dysk: 64
+    cena: 2999
+    kolor: niebieski
+
+  Tablet Apple iPad 2021 Wi-Fi 256GB szary:
+    wyswietlacz: 10.2
+    ram: 2
+    dysk: 16
+    cena: 2749
+    kolor: szary
+
+  Tablet Apple iPad Pro 2021 niebieski:
+    wyswietlacz: 10.9
+    ram: 16
+    dysk: 16
+    cena: 5599
+    kolor: niebieski
+
+  Tablet Apple iPad Pro niebieski:
+    wyswietlacz: 10.2
+    ram: 8
+    dysk: 256
+    cena: 7399
+    kolor: niebieski
+
+  Tablet iPad10:
+    wyswietlacz: 10.2
+    ram: 2
+    dysk: 256
+    cena: 5299
+    kolor: szary
+
+ 
+Goal:
+  name: Kupno tabletu
+  preferences:
+    # Wydajnosc > Jakosc > styl > cena >
+    pairwise:
+      - [Wydajnosc, Jakosc, 3]
+      - [Wydajnosc, Cena, 7]
+      - [Wydajnosc, Styl, 9]
+      - [Jakosc, Styl, 5]
+      - [Jakosc, Cena, 3] 
+      - [Styl, Cena, 2]
+  children: 
+    # Jak najwiecej ramu
+    Wydajnosc:
+      preferences:
+        pairwiseFunction:
+          function(a1, a2) max(1/9, max(9, a2$ram/a1$ram))
+      children: *alternatives 
+
+    # Jak najwieksza pojemnosc 
+    Jakosc: 
+       preferences:
+           pairwiseFunction: 
+             function(a1, a2) max(1/9, min(9, a2$dysk/a1$dysk))
+       children: *alternatives	
+
+    # Niska cena
+    Cena:
+      preferences: 
+        pairwiseFunction:
+          function(a1, a2) max(1/9, min(9, a1$cena/a2$cena))
+      children: *alternatives
+
+    # Kolory wg wzoru
+    Styl: 
+      preferences:
+        pairwiseFunction: >
+          ColorPreference <- function(a1, a2) {
+            if (a1$kolor == 'niebieski' & a2$kolor == 'zielony') return (1/4)
+            if (a1$kolor == 'niebieski' & a2$kolor == 'szary') return (1/5)
+            if (a1$kolor == 'szary' & a2$kolor == 'zielony') return (2)
+            if (a1$kolor == a2$kolor) return (1)
+            return (ColorPreference(a2, a1))
+          }
+      children: *alternatives
+ #
+ # End of Goal Section
+ #
