@@ -1,0 +1,180 @@
+> install.packages("randomForest")
+Error in install.packages : Updating loaded packages
+> install.packages("e1071")
+Error in install.packages : Updating loaded packages
+> install.packages("party")
+Error in install.packages : Updating loaded packages
+> install.packages("mlr")
+Error in install.packages : Updating loaded packages
+> install.packages("rFerns")
+Error in install.packages : Updating loaded packages
+> library(randomForest)
+> library(party)
+> library(mlr)
+> library(rFerns)
+> 
+> nazwa <- c("Tablet Apple iPad (10 gen.) 2022 (srebrny)", 
++            "Tablet Apple iPad 2021", 
++            "Tablet Apple iPad (10 gen.) 2022 (rozowy)", 
++            "Tablet Apple iPad Wi-Fi (gwiezdna szarosc)", 
++            "Tablet Apple iPad Air 2022 Wi-Fi (gwiezdna szarosc)", 
++            "Tablet Apple iPad Air 2022 Wi-Fi (ksiezycowa poswiata)", 
++            "Tablet Apple iPad 2021 Wi-Fi 256GB (srebrny)", 
++            "Tablet Apple iPad Pro 2021 (srebrny)", 
++            "Tablet Apple iPad Pro (gwiezdna szarosc)", 
++            "iPad10")
+> wyswietlacz <- c(10.9, 10.2, 10.2, 10.2, 10.9, 10.9, 10.2, 10.2, 11, 9.7)
+> pamiec_RAM <- c(1, 4, 64, 8, 2, 32, 1, 64, 8, 2)
+> pamiec_wbudowana <- c(64, 128, 64, 256, 64, 32, 16, 256, 256, 128)
+> cena <- c(2719, 2399, 3649, 2749, 3799, 2999, 2749, 12599, 7399, 5299)
+> ocena <- c(6,3.5,6,4,2.5,5,2,4,4.5,5)
+> ipady_rtv <- data.frame(nazwa, wyswietlacz, pamiec_RAM, pamiec_wbudowana, cena, ocena)
+> ipady_rtv$nazwa = factor(ipady_rtv$nazwa)
+> ipady_rtv$ocena = factor(ipady_rtv$ocena)
+> 
+> summarizeColumns(ipady_rtv)
+              name    type na    mean         disp median       mad    min   max nlevs
+1            nazwa  factor  0      NA    0.9000000     NA        NA    1.0     1    10
+2      wyswietlacz numeric  0   10.44    0.4452215   10.2   0.37065    9.7    11     0
+3       pamiec_RAM numeric  0   18.60   25.6263753    6.0   6.67170    1.0    64     0
+4 pamiec_wbudowana numeric  0  126.40   96.1332409   96.0  71.16480   16.0   256     0
+5             cena numeric  0 4636.00 3190.9282871 3324.0 874.73400 2399.0 12599     0
+6            ocena  factor  0      NA    0.8000000     NA        NA    1.0     2     7
+> 
+> rdesc = makeResampleDesc("CV", iters = 10)
+> 
+> task = makeClassifTask(id = deparse(substitute(ipady_rtv)), ipady_rtv, "ocena",
++                        weights = NULL, blocking = NULL, coordinates = NULL,
++                        positive = NA_character_, fixup.data = "warn", check.data = TRUE)
+> lrns <- makeLearners(c("rpart", "C50", "ctree", "naiveBayes", "randomForest"), type = "classif")
+> 
+> 
+> bmr <- benchmark(learners = lrns, tasks = task, rdesc, models = TRUE, measures = list(acc, ber))
+Task: ipady_rtv, Learner: classif.rpart
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    0.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.0000000,ber.test.mean=     NaN
+
+
+Task: ipady_rtv, Learner: classif.C50
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    1.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    1.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.2000000,ber.test.mean=     NaN
+
+
+Task: ipady_rtv, Learner: classif.ctree
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    0.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.0000000,ber.test.mean=     NaN
+
+
+Task: ipady_rtv, Learner: classif.naiveBayes
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    0.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.0000000,ber.test.mean=     NaN
+
+
+Task: ipady_rtv, Learner: classif.randomForest
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    1.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.1000000,ber.test.mean=     NaN
+
+
+> p = getBMRPredictions(bmr)
+> plotBMRSummary(bmr)
+> install.packages("e1071")
+Instalowanie pakietu w ‘C:/Users/micha/AppData/Local/R/win-library/4.2’
+(ponieważ ‘lib’ nie jest określony)
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.2/e1071_1.7-13.zip'
+Content type 'application/zip' length 652547 bytes (637 KB)
+downloaded 637 KB
+
+pakiet ‘e1071’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+Warning in install.packages :
+  nie można usunąć poprzedniej instalacji pakietu ‘e1071’
+Warning in install.packages :
+  problem copying C:\Users\micha\AppData\Local\R\win-library\4.2\00LOCK\e1071\libs\x64\e1071.dll to C:\Users\micha\AppData\Local\R\win-library\4.2\e1071\libs\x64\e1071.dll: Permission denied
+Warning in install.packages :
+  przywrócono ‘e1071’
+
+Pobrane pakiety binarne są w
+	C:\Users\micha\AppData\Local\Temp\RtmpMtvUq9\downloaded_packages
+> install.packages("randomForest")
+Warning in install.packages :
+  pakiet ‘randomForest’ jest w użyciu i nie zostanie zainstalowany
+> install.packages("rFerns")
+Error in install.packages : Updating loaded packages
+> install.packages("mlr")
+Error in install.packages : Updating loaded packages
+> install.packages("party")
+Error in install.packages : Updating loaded packages
+> install.packages("party")
+Warning in install.packages :
+  pakiet ‘party’ jest w użyciu i nie zostanie zainstalowany
+> install.packages("mlr")
+Warning in install.packages :
+  pakiet ‘mlr’ jest w użyciu i nie zostanie zainstalowany
+> install.packages("rFerns")
+Warning in install.packages :
+  pakiet ‘rFerns’ jest w użyciu i nie zostanie zainstalowany
+> 
