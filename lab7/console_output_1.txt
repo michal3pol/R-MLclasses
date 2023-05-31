@@ -1,0 +1,252 @@
+> text <- readLines("ai.txt")
+> TextDoc <- Corpus(VectorSource(text))
+> toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+> TextDoc <- tm_map(TextDoc, toSpace, "/")
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, toSpace, "/") :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, toSpace, "@")
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, toSpace, "@") :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, toSpace, "\\|")
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, toSpace, "\\|") :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, toSpace, ":")
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, toSpace, ":") :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, toSpace, ";")
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, toSpace, ";") :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, toSpace, ",")
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, toSpace, ",") :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, content_transformer(tolower))
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, content_transformer(tolower)) :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, removeNumbers)
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, removeNumbers) :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, removeWords, stopwords("english"))
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, removeWords, stopwords("english")) :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, removePunctuation)
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, removePunctuation) :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, stripWhitespace)
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, stripWhitespace) :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, stemDocument)
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, stemDocument) :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, content_transformer(
++   function(x) gsub(x, pattern = "mathemat", replacement = "math")))
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, content_transformer(function(x) gsub(x,  :
+  transformation drops documents
+> TextDoc <- tm_map(TextDoc, content_transformer(
++   function(x) gsub(x, pattern = " r ", replacement = " Rlanguage ")))
+Warning message:
+In tm_map.SimpleCorpus(TextDoc, content_transformer(function(x) gsub(x,  :
+  transformation drops documents
+> # macierz dokumentu
+> TextDoc_dtm <- TermDocumentMatrix(TextDoc)
+> dtm_m <- as.matrix(TextDoc_dtm)
+> dtm_v <- sort(rowSums(dtm_m),decreasing=TRUE)
+> dtm_d <- data.frame(word = names(dtm_v),freq=dtm_v)
+> 
+> # 5 najczestszych slow
+> head(dtm_d, 5)
+             word freq
+intellig intellig  100
+artifici artifici   62
+use           use   55
+machin     machin   54
+learn       learn   52
+> barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
++         col ="lightgreen",
++         main ="20 najczestszych slow w artykule",
++         ylab = "Czestotliwosc slow")
+> set.seed(1234)
+> wordcloud(words = dtm_d$word, freq = dtm_d$freq, scale=c(5,0.5),
++           min.freq = 1,
++           max.words=100, random.order=FALSE,
++           rot.per=0.40,
++           colors=brewer.pal(8, "Dark2"))
+There were 26 warnings (use warnings() to see them)
+> findAssocs(TextDoc_dtm, terms = findFreqTerms(TextDoc_dtm, lowfreq = 30),
++            corlimit = 0.5)
+$artifici
+numeric(0)
+
+$comput
+numeric(0)
+
+$human
+       acquir       benevol       bostrom         charl         choos           end          harm 
+         0.56          0.56          0.56          0.56          0.56          0.56          0.56 
+        humbl indistinguish       mankind          nick     physicist          pose        priori 
+         0.56          0.56          0.56          0.56          0.56          0.56          0.56 
+          put       reflect       resourc         rubin         share          shut         spell 
+         0.56          0.56          0.56          0.56          0.56          0.56          0.56 
+        treat         ultim         might          hawk       malevol          argu 
+         0.56          0.56          0.55          0.55          0.55          0.54 
+
+$intellig
+general 
+   0.51 
+
+$machin
+ethic 
+ 0.52 
+
+$system
+   chess deepmind 
+    0.52     0.52 
+
+$use
+   explan     occur    smooth  bayesian      plan   percept   various incomplet 
+     0.64      0.64      0.64      0.60      0.56      0.55      0.53      0.51 
+
+$learn
+ output classif 
+   0.55    0.51 
+
+$logic
+          add          alic          aris        assign        belief      calculus        causal 
+         0.92          0.92          0.92          0.92          0.92          0.92          0.92 
+ circumscript contradictori        extens          fals      firstord        fluent        hungri 
+         0.92          0.92          0.92          0.92          0.92          0.92          0.92 
+    inconsist         modal    nonmonoton   paraconsist        predic      proposit        qualif 
+         0.92          0.92          0.92          0.92          0.92          0.92          0.92 
+     quantifi         revis          rich          tall          vagu         truth       default 
+         0.92          0.92          0.92          0.92          0.92          0.86          0.82 
+    statement        design      linguist      imprecis         event        involv       multiag 
+         0.75          0.73          0.70          0.70          0.69          0.65          0.65 
+        degre         handl           old      descript         sever         fuzzi        situat 
+         0.65          0.65          0.65          0.62          0.60          0.57          0.53 
+      complet 
+         0.53 
+
+$problem
+solv 
+ 0.6 
+
+$research
+field 
+ 0.52 
+
+$network
+     neural       acycl        basi    feedback feedforward    multilay        pass      radial   shortterm 
+       0.83        0.55        0.55        0.55        0.55        0.55        0.55        0.55        0.55 
+ perceptron 
+       0.54 
+
+$can
+    case gradient 
+    0.53     0.51 
+
+$algorithm
+      anneal          ant         beam         bird        blind      classic        climb       coloni 
+        0.71         0.71         0.71         0.71         0.71         0.71         0.71         0.71 
+     coordin      fittest        flock         gene         hill    increment         jump         keep 
+        0.71         0.71         0.71         0.71         0.71         0.71         0.71         0.71 
+        kind  metaheurist        mutat     recombin        trail        uphil          via        guess 
+        0.71         0.71         0.71         0.71         0.71         0.71         0.71         0.68 
+       genet        optim        swarm        refin        begin       random evolutionari     landscap 
+        0.68         0.67         0.67         0.67         0.63         0.63         0.62         0.58 
+       popul       inspir       search         step 
+        0.58         0.57         0.52         0.52 
+
+$articl
+numeric(0)
+
+$main
+numeric(0)
+
+> 
+> # Anal. sentymentu
+> syuzhet_vector <- get_sentiment(text, method="syuzhet")
+> head(syuzhet_vector)
+[1] 3.25 5.75 0.00 0.60 0.00 5.30
+> summary(syuzhet_vector)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-3.1000  0.0000  0.0000  0.9567  1.3000  9.9000 
+> 
+> # bing
+> bing_vector <- get_sentiment(text, method="bing")
+> head(bing_vector)
+[1] 2 3 0 2 0 2
+> summary(bing_vector)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-5.0000  0.0000  0.0000  0.3431  1.0000  6.0000 
+> 
+> # affin
+> afinn_vector <- get_sentiment(text, method="afinn")
+> head(afinn_vector)
+[1] 4 3 0 1 0 1
+> summary(afinn_vector)
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+-11.0000   0.0000   0.0000   0.5327   0.0000  14.0000 
+> 
+> rbind(
++   sign(head(syuzhet_vector)),
++   sign(head(bing_vector)),
++   sign(head(afinn_vector))
++ )
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    1    0    1    0    1
+[2,]    1    1    0    1    0    1
+[3,]    1    1    0    1    0    1
+> # emocje
+> d<-get_nrc_sentiment(as.vector(dtm_d$word))
+Warning message:
+`spread_()` was deprecated in tidyr 1.2.0.
+ℹ Please use `spread()` instead.
+ℹ The deprecated feature was likely used in the syuzhet package.
+  Please report the issue to the authors.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated. 
+> head (d,10)
+   anger anticipation disgust fear joy sadness surprise trust negative positive
+1      0            0       0    0   0       0        0     0        0        0
+2      0            0       0    0   0       0        0     0        0        0
+3      0            0       0    0   0       0        0     0        0        0
+4      0            0       0    0   0       0        0     0        0        0
+5      0            0       0    0   0       0        0     0        0        1
+6      0            0       0    0   0       0        0     0        0        0
+7      0            0       0    0   0       0        0     0        0        0
+8      0            0       0    0   0       0        0     0        0        0
+9      0            0       0    1   0       1        0     0        1        0
+10     0            0       0    0   0       0        0     0        0        0
+> 
+> td<-data.frame(t(d))
+> td_new <- data.frame(rowSums(td[1:56]))
+> names(td_new)[1] <- "count"
+> td_new <- cbind("sentiment" = rownames(td_new), td_new)
+> rownames(td_new) <- NULL
+> td_new2<-td_new[1:8,]
+> quickplot(sentiment, data=td_new2, weight=count, geom="bar", fill=sentiment,
++           ylab="count")+ggtitle("Survey sentiments")
+Warning message:
+`qplot()` was deprecated in ggplot2 3.4.0.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated. 
+> 
+> barplot(
++   sort(colSums(prop.table(d[, 1:8]))),
++   horiz = TRUE,
++   cex.names = 0.7,
++   las = 1,
++   main = "Emotions in Text", xlab="Percentage"
++ )
